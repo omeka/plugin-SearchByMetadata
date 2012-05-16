@@ -5,10 +5,10 @@ class SearchByMetadataPlugin extends Omeka_Plugin_Abstract
 {
     protected $_hooks = array('uninstall', 'config', 'config_form');
 
-    public function init()
+    public function setUp()
     {
-        $linkedElements = get_option('search_by_metadata_elements');
-        $linkedElements = array('Dublin Core' => array('Subject'));
+        parent::setUp();
+        $linkedElements = unserialize(get_option('search_by_metadata_elements'));
         foreach($linkedElements as $elementSet=>$elements) {
             foreach($elements as $element) {
                 add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
@@ -18,7 +18,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_Abstract
 
     public function hookInstall()
     {
-        set_option('search_by_metadata_elements', array());
+        set_option('search_by_metadata_elements', serialize(array()));
     }
 
     public function hookUninstall()
@@ -26,14 +26,24 @@ class SearchByMetadataPlugin extends Omeka_Plugin_Abstract
         delete_option('search_by_metadata_elements');
     }
 
-    public function hookConfig()
+    public function hookConfig($post)
     {
-
+        $elements = array();
+        $elTable = get_db()->getTable('Element');
+        foreach($post['element_sets'] as $elId) {
+            $element = $elTable->find($elId);
+            $elSet = $element->getElementSet();
+            if(!array_key_exists($elSet->name, $elements)) {
+                $elements[$elSet->name] = array();
+            }
+            $elements[$elSet->name][] = $element->name;
+        }
+        set_option('search_by_metadata_elements', serialize($elements));
     }
 
     public function hookConfigForm()
     {
-
+        include('config_form.php');
     }
 
     public function link($text, $record, $elementText)
