@@ -1,5 +1,5 @@
 <p>Check the metadata fields that you want to make search links. Recommended best practice is to use a controlled
-vocabulary on the fields to make links.</a>
+vocabulary with the <a href="http://omeka.org/add-ons/plugins/simple-vocab/">Simple Vocab</a> plugin on the fields that will be made into make links.</a>
 
 <?php
 $elTable = get_db()->getTable('Element');
@@ -11,8 +11,6 @@ foreach($linkedElements as $elSet=>$elements) {
         $elObject = $elTable->findByElementSetNameAndElementName($elSet, $element);
         $values[] = $elObject->id;
     }
-
-
 }
 
 foreach($data as $elSet=>$options) {
