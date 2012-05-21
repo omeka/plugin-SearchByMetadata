@@ -6,10 +6,12 @@ $elTable = get_db()->getTable('Element');
 $data = $elTable->findPairsForSelectForm();
 $linkedElements = unserialize(get_option('search_by_metadata_elements'));
 $values = array();
-foreach($linkedElements as $elSet=>$elements) {
-    foreach($elements as $element) {
-        $elObject = $elTable->findByElementSetNameAndElementName($elSet, $element);
-        $values[] = $elObject->id;
+if(is_array($linkedElements)) {
+    foreach($linkedElements as $elSet=>$elements) {
+        foreach($elements as $element) {
+            $elObject = $elTable->findByElementSetNameAndElementName($elSet, $element);
+            $values[] = $elObject->id;
+        }
     }
 }
 

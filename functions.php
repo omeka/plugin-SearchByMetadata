@@ -2,6 +2,7 @@
 
 /**
  * Returns an array of elements matching the criteria in $elementsArray
+ * Results are ANDed together
  * $elementsArray is like:
  * array('Dublin Core' => array(
  * 								'Subject' => array('subject 1', 'subject 2')
@@ -24,9 +25,7 @@ function search_by_metadata_find_items($elementsArray)
                                                      'type' => 'is exactly',
                                                      'element_id' => $element->id );
             }
-
         }
     }
     return $itemTable->findBy($params);
-
 }
