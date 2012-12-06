@@ -3,7 +3,11 @@
 
 class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 {
-    protected $_hooks = array('uninstall', 'config', 'config_form');
+    protected $_hooks = array(
+        'uninstall', 
+        'config', 
+        'config_form',
+        );
 
     public function setUp()
     {
@@ -62,6 +66,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         ));
         return "<a href=\"$url\">$text</a>";
     }
+    
 
 
 }
