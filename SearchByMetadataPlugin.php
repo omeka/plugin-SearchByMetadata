@@ -1,7 +1,7 @@
 <?php
 
 
-class SearchByMetadataPlugin extends Omeka_Plugin_Abstract
+class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array('uninstall', 'config', 'config_form');
 

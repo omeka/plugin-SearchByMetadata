@@ -18,7 +18,7 @@ if(is_array($linkedElements)) {
 foreach($data as $elSet=>$options) {
     echo "<div class='field'>";
     echo "<h2>$elSet</h2>";
-    echo __v()->formMultiCheckbox('element_sets', $values, null, $options, '');
+    echo get_view()->formMultiCheckbox('element_sets', $values, null, $options, '');
     echo "</div>";
 }
 
