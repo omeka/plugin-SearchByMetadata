@@ -13,9 +13,11 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     {
         parent::setUp();
         $linkedElements = unserialize(get_option('search_by_metadata_elements'));
-        foreach($linkedElements as $elementSet=>$elements) {
-            foreach($elements as $element) {
-                add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+        if(is_array($linkedElements)){
+            foreach($linkedElements as $elementSet=>$elements) {
+                foreach($elements as $element) {
+                    add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+                }
             }
         }
     }
