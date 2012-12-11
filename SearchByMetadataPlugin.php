@@ -16,7 +16,8 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         if(is_array($linkedElements)){
             foreach($linkedElements as $elementSet=>$elements) {
                 foreach($elements as $element) {
-                    add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+                    //add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+			add_filter(array('Display','Item', $element ), array($this, 'link'));
                 }
             }
         }
@@ -32,11 +33,11 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         delete_option('search_by_metadata_elements');
     }
 
-    public function hookConfig($post)
+    public function hookConfig()
     {
         $elements = array();
         $elTable = get_db()->getTable('Element');
-        foreach($post['element_sets'] as $elId) {
+        foreach($_POST['element_sets'] as $elId) {
             $element = $elTable->find($elId);
             $elSet = $element->getElementSet();
             if(!array_key_exists($elSet->name, $elements)) {

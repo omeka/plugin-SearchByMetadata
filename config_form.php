@@ -5,6 +5,7 @@ vocabulary with the <a href="http://omeka.org/add-ons/plugins/simple-vocab/">Sim
 $elTable = get_db()->getTable('Element');
 $data = $elTable->findPairsForSelectForm();
 $linkedElements = unserialize(get_option('search_by_metadata_elements'));
+
 $values = array();
 if(is_array($linkedElements)) {
     foreach($linkedElements as $elSet=>$elements) {
@@ -14,6 +15,7 @@ if(is_array($linkedElements)) {
         }
     }
 }
+
 
 foreach($data as $elSet=>$options) {
     echo "<div class='field'>";
