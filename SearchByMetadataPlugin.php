@@ -16,8 +16,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         if(is_array($linkedElements)){
             foreach($linkedElements as $elementSet=>$elements) {
                 foreach($elements as $element) {
-                    //add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
-			add_filter(array('Display','Item', $element ), array($this, 'link'));
+                    add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
                 }
             }
         }
@@ -33,11 +32,12 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         delete_option('search_by_metadata_elements');
     }
 
-    public function hookConfig()
-    {
+    public function hookConfig($args)
+    {   
+        $post = $args['post'];
         $elements = array();
         $elTable = get_db()->getTable('Element');
-        foreach($_POST['element_sets'] as $elId) {
+        foreach($post['element_sets'] as $elId) {
             $element = $elTable->find($elId);
             $elSet = $element->getElementSet();
             if(!array_key_exists($elSet->name, $elements)) {
@@ -53,17 +53,20 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         include('config_form.php');
     }
 
-    public function link($text, $record, $elementText)
+    public function link($text, $args)//$record, $elementText)
     {
-        if (trim($text) == '') return $text;
+        
+        $record = $args['record'];
+        $elementText = $args['element_text'];
+        if (trim($text) == '' || !$elementText) return $text;
 
         $elementId = $elementText->element_id;
-        $url = uri('items/browse', array(
+        $url = url('items/browse', array(
             'advanced' => array(
                 array(
                     'element_id' => $elementId,
                     'type' => 'is exactly',
-                    'terms' => $text
+                    'terms' =>$elementText->text,
                 )
             )
         ));
