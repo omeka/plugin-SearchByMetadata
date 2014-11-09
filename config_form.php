@@ -24,9 +24,7 @@ if (get_option('show_element_set_headings') ) {
         echo "</div>";
     }
 } else {
-    foreach($data as $elSet=>$options) {
-        echo "<div class='field'>";
-        echo $view->formMultiCheckbox('element_sets', $values, null, $options, '');
-        echo "</div>";
-    }
+    echo "<div class='field no-headings'>";
+    echo $view->formMultiCheckbox('element_sets', $values, null, $data, '');
+    echo "</div>";
 }
