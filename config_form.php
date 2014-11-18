@@ -1,5 +1,5 @@
-<p>Check the metadata fields that you want to make search links. Recommended best practice is to use a controlled
-vocabulary with the <a href="http://omeka.org/add-ons/plugins/simple-vocab/">Simple Vocab</a> plugin on the fields that will be made into make links.</a>
+<p>Check the metadata fields that you want to make into search links. Recommended best practice is to use a controlled
+vocabulary with the <a href="http://omeka.org/add-ons/plugins/simple-vocab/">Simple Vocab</a> plugin on the fields that will be made into links.</p>
 
 <?php
 $elTable = get_db()->getTable('Element');
