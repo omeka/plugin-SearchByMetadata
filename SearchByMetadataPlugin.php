@@ -16,7 +16,16 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         if(is_array($linkedElements)){
             foreach($linkedElements as $elementSet=>$elements) {
                 foreach($elements as $element) {
-                    add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+                    //don't add links on DC:Title if on browse pages,
+                    //as this creates links right back to the browse page search
+                    //need to punt to a special filter, since Request doesn't exist here
+                    if ($elementSet == 'Dublin Core'
+                        && $element == 'Title') {
+                        add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'linkDcTitle'));
+                    } else {
+                        add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+                    }
+                    
                 }
             }
         }
@@ -53,6 +62,16 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         include('config_form.php');
     }
 
+    public function linkDcTitle($text, $args)
+    {
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $action = $request->getActionName();
+        if ($action != 'browse') {
+            return $this->link($text, $args);
+        }
+        return $text;
+    }
+    
     public function link($text, $args)//$record, $elementText)
     {
         
