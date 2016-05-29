@@ -24,6 +24,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                         add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'linkDcTitle'));
                     } else {
                         add_filter(array('Display', 'Item', $elementSet, $element), array($this, 'link'));
+                        add_filter(array('Display', 'Collection', $elementSet, $element), array($this, 'link'));
                     }
                     
                 }
@@ -74,13 +75,24 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     
     public function link($text, $args)//$record, $elementText)
     {
-        
         $record = $args['record'];
+        switch (get_class($record)) {
+            case 'Item':
+                $controller = 'items';
+            break;
+            
+            case 'Collection':
+                $controller = 'collections';
+            break;
+            
+            default:
+                $controller = 'collections';
+        }
         $elementText = $args['element_text'];
         if (trim($text) == '' || !$elementText) return $text;
 
         $elementId = $elementText->element_id;
-        $url = url('items/browse', array(
+        $url = url("$controller/browse", array(
             'advanced' => array(
                 array(
                     'element_id' => $elementId,
