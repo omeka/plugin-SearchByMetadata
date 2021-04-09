@@ -12,7 +12,7 @@ Use it at your own risk.
 It’s always recommended to backup your files and your databases and to check your archives regularly so you can roll back if needed.
 
 ## Troubleshooting
-See online issues on the <a href="https://github.com/DBinaghi/plugin-EmailNotification/issues" target="_blank">plugin issues</a> page on GitHub.
+See online issues on the <a href="https://github.com/omeka/plugin-SearchByMetadata/issues" target="_blank">plugin issues</a> page on GitHub.
 
 ## Copyright
 Copyright Corporation for Digital Scholarship, 2017-2021
