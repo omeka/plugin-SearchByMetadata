@@ -22,6 +22,8 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         $settings = json_decode(get_option('search_by_metadata_elements'), true);
         $this->_settings = $settings;
 
+        if (is_admin_theme()) return;
+        
         if (is_array($settings)){
             if (is_array($settings['item_elements'])) {
                 // Items
