@@ -34,6 +34,17 @@
     </div>
 </div>
 
+<div class="field">
+    <div class="two columns alpha">
+        <?php echo $view->formLabel('search_by_metadata_admin_side', __('Admin side')); ?>
+    </div>
+    <div class="inputs five columns omega">
+        <p class="explanation">
+            <?php echo __('If checked, links will be created also on Admin side (by default, plugin is applied only to Public side).'); ?>
+        </p>
+        <?php echo $view->formCheckbox('search_by_metadata_admin_side', get_option('search_by_metadata_admin_side'), null, array('1', '0')); ?>
+    </div>
+</div>
 
 <h2><?php echo __('Elements'); ?></h2>
 
