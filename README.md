@@ -16,4 +16,5 @@ See online issues on the <a href="https://github.com/omeka/plugin-SearchByMetada
 
 ## Copyright
 Copyright Corporation for Digital Scholarship, 2017-2021
+
 Copyright Daniele Binaghi, 2021
