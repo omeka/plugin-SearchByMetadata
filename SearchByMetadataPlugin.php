@@ -22,9 +22,9 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         $settings = json_decode(get_option('search_by_metadata_elements'), true);
         $this->_settings = $settings;
 
-        if (is_admin_theme()) return;
-        
-        if (is_array($settings)){
+        if (is_admin_theme() && get_option('search_by_metadata_admin_side') != 1) return;
+		
+		if (is_array($settings)){
             if (is_array($settings['item_elements'])) {
                 // Items
                 foreach ($settings['item_elements'] as $elementSetName=>$elementSet) {
@@ -70,6 +70,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
         set_option('search_by_metadata_show_tooltip', 0);
         set_option('search_by_metadata_merge_results', 0);
+        set_option('search_by_metadata_admin_side', 0);
     }
 
     /**
@@ -100,6 +101,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
             set_option('search_by_metadata_show_tooltip', 0);
             set_option('search_by_metadata_merge_results', 0);
+            set_option('search_by_metadata_admin_side', 0);
         }
     }
 
@@ -107,6 +109,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     {
         delete_option('search_by_metadata_show_tooltip');
         delete_option('search_by_metadata_merge_results');
+        delete_option('search_by_metadata_admin_side');
         delete_option('search_by_metadata_elements');
     }
 
@@ -121,6 +124,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         set_option('search_by_metadata_elements', json_encode($settings));
         set_option('search_by_metadata_show_tooltip', (bool)$post['search_by_metadata_show_tooltip']);
         set_option('search_by_metadata_merge_results', (bool)$post['search_by_metadata_merge_results']);
+        set_option('search_by_metadata_admin_side', (bool)$post['search_by_metadata_admin_side']);
     }
 
     public function hookConfigForm()
