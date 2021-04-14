@@ -15,6 +15,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         'uninstall', 
         'config', 
         'config_form',
+        'collections_browse_sql'
     );
 
     public function hookInitialize()
@@ -22,20 +23,19 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         $settings = json_decode(get_option('search_by_metadata_elements'), true);
         $this->_settings = $settings;
 
-        if (is_admin_theme() && get_option('search_by_metadata_admin_side') != 1) return;
-		
-		if (is_array($settings)){
+        if (is_admin_theme() && !get_option('search_by_metadata_admin_side')) return;
+        
+        if (is_array($settings)){
             if (is_array($settings['item_elements'])) {
                 // Items
                 foreach ($settings['item_elements'] as $elementSetName=>$elementSet) {
                     foreach ($elementSet as $elementName=>$isEnabled) {
-                        // don't add links on DC:Title if on browse pages,
-                        // as this creates links right back to the browse page search;
+                        // for DC:Title on browse pages,
                         // need to point to a special filter, since Request doesn't exist here
                         if ($elementSetName == 'Dublin Core' && $elementName == 'Title') {
-                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'linkDcTitle'));
+                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'createLinkDcTitle'));
                         } else {
-                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'link'));
+                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'createLink'));
                         }
                         
                     }
@@ -45,13 +45,12 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                 // Collections
                 foreach ($settings['collection_elements'] as $elementSetName=>$elementSet) {
                     foreach ($elementSet as $elementName=>$isEnabled) {
-                        // don't add links on DC:Title if on browse pages,
-                        // as this creates links right back to the browse page search;
+                        // for DC:Title on browse pages,
                         // need to point to a special filter, since Request doesn't exist here
                         if ($elementSetName == 'Dublin Core' && $elementName == 'Title') {
-                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'linkDcTitle'));
+                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'createLinkDcTitle'));
                         } else {
-                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'link'));
+                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'createLink'));
                         }
                         
                     }
@@ -140,18 +139,126 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         $elements = $table->fetchObjects($select);
         include('config_form.php');
     }
+    
+    /**
+     * Hook into collections_browse_sql
+     *
+     * @select array $args
+     * @params array $args
+     */
+    public function hookCollectionsBrowseSql($args)
+    {
+        $db = $this->_db;
+        $select = $args['select'];
+        $params = $args['params'];
+        
+        if ($advancedTerms = @$params['advanced']) {
+            $where = '';
+            $advancedIndex = 0;
+            foreach ($advancedTerms as $v) {
+                // Do not search on blank rows.
+                if (empty($v['element_id']) || empty($v['type'])) {
+                    continue;
+                }
 
-    public function linkDcTitle($text, $args)
+                $value = isset($v['terms']) ? $v['terms'] : null;
+                $type = $v['type'];
+                $elementId = (int) $v['element_id'];
+                $alias = "_advanced_{$advancedIndex}";
+
+                $joiner = isset($v['joiner']) && $advancedIndex > 0 ? $v['joiner'] : null;
+
+                $negate = false;
+                // Determine what the WHERE clause should look like.
+                switch ($type) {
+                    case 'does not contain':
+                        $negate = true;
+                    case 'contains':
+                        $predicate = "LIKE " . $db->quote('%'.$value .'%');
+                        break;
+
+                    case 'is not exactly':
+                        $negate = true;
+                    case 'is exactly':
+                        $predicate = ' = ' . $db->quote($value);
+                        break;
+
+                    case 'is empty':
+                        $negate = true;
+                    case 'is not empty':
+                        $predicate = 'IS NOT NULL';
+                        break;
+
+                    case 'starts with':
+                        $predicate = "LIKE " . $db->quote($value.'%');
+                        break;
+
+                    case 'ends with':
+                        $predicate = "LIKE " . $db->quote('%'.$value);
+                        break;
+
+                    case 'does not match':
+                        $negate = true;
+                    case 'matches':
+                        if (!strlen($value)) {
+                            continue 2;
+                        }
+                        $predicate = 'REGEXP ' . $db->quote($value);
+                        break;
+
+                    default:
+                        throw new Omeka_Record_Exception(__('Invalid search type given!'));
+                }
+
+                $predicateClause = "{$alias}.text {$predicate}";
+
+                // Note that $elementId was earlier forced to int, so manual quoting
+                // is unnecessary here
+                $joinCondition = "{$alias}.record_id = collections.id AND {$alias}.record_type = 'Collection' AND {$alias}.element_id = $elementId";
+
+                if ($negate) {
+                    $joinCondition .= " AND {$predicateClause}";
+                    $whereClause = "{$alias}.text IS NULL";
+                } else {
+                    $whereClause = $predicateClause;
+                }
+
+                $select->joinLeft(array($alias => $db->ElementText), $joinCondition, array());
+                if ($where == '') {
+                    $where = $whereClause;
+                } elseif ($joiner == 'or') {
+                    $where .= " OR $whereClause";
+                } else {
+                    $where .= " AND $whereClause";
+                }
+
+                $advancedIndex++;
+            }
+
+            if ($where) {
+                $select->where($where);
+            }
+        }            
+    }
+
+    /**
+     * Turn DC:Title's text into link if not on Browse page,
+     * as this creates links right back to the browse page search;
+     */
+    public function createLinkDcTitle($text, $args)
     {
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $action = $request->getActionName();
         if ($action != 'browse') {
-            return $this->link($text, $args);
+            return $this->createLink($text, $args);
         }
         return $text;
     }
     
-    public function link($text, $args)
+    /**
+     * Turn element's text into link (with additional tooltip)
+     */
+    public function createLink($text, $args)
     {
         $elementText = $args['element_text'];
         if (trim($text) == '' || !$elementText) return $text;
