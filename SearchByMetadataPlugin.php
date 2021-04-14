@@ -33,9 +33,9 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                         // for DC:Title on browse pages,
                         // need to point to a special filter, since Request doesn't exist here
                         if ($elementSetName == 'Dublin Core' && $elementName == 'Title') {
-                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'createLinkDcTitle'));
+                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'linkItemDcTitle'));
                         } else {
-                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'createLink'));
+							add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'linkItem'));
                         }
                         
                     }
@@ -48,9 +48,9 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                         // for DC:Title on browse pages,
                         // need to point to a special filter, since Request doesn't exist here
                         if ($elementSetName == 'Dublin Core' && $elementName == 'Title') {
-                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'createLinkDcTitle'));
+                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'linkCollectionDcTitle'));
                         } else {
-                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'createLink'));
+							add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'linkCollection'));
                         }
                         
                     }
@@ -241,32 +241,50 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         }            
     }
 
+	public function linkItemDcTitle($text, $args)
+	{
+		return $this->createLinkDcTitle($text, $args, 'items');
+	}
+
+	public function linkCollectionDcTitle($text, $args)
+	{
+		return $this->createLinkDcTitle($text, $args, 'collections');
+	}
+
     /**
      * Turn DC:Title's text into link if not on Browse page,
      * as this creates links right back to the browse page search;
      */
-    public function createLinkDcTitle($text, $args)
+    public function createLinkDcTitle($text, $args, $model)
     {
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $action = $request->getActionName();
         if ($action != 'browse') {
-            return $this->createLink($text, $args);
+            return $this->createLink($text, $args, $model);
         }
         return $text;
     }
+
+	public function linkItem($text, $args)
+	{
+		return $this->createLink($text, $args, 'items');
+	}
+
+	public function linkCollection($text, $args)
+	{
+		return $this->createLink($text, $args, 'collections');
+	}
     
     /**
      * Turn element's text into link (with additional tooltip)
      */
-    public function createLink($text, $args)
+    public function createLink($text, $args, $model)
     {
         $elementText = $args['element_text'];
         if (trim($text) == '' || !$elementText) return $text;
-        $request = Zend_Controller_Front::getInstance()->getRequest();
-        $controllerName = $request->getControllerName();
 
         $elementId = $elementText->element_id;
-        $url = url($controllerName . '/browse', array(
+        $url = url($model . '/browse', array(
             'advanced' => array(
                 array(
                     'element_id' => $elementId,
@@ -276,7 +294,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
             )
         ));
 
-        $tooltip = (get_option('search_by_metadata_show_tooltip') ? " title=\"" . __('Browse other %s featuring exactly this same value', $controllerName) . "\"" : "");
+        $tooltip = (get_option('search_by_metadata_show_tooltip') ? " title=\"" . __('Browse other %s featuring exactly this same value', $model) . "\"" : "");
                     
         return "<a href=\"$url\"" . $tooltip . ">$text</a>";
     }
