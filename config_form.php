@@ -12,7 +12,7 @@
 
 <div class="field">
     <div class="two columns alpha">
-        <?php echo $view->formLabel('search_by_metadata_show_tooltip', __('Add tooltip')); ?>
+        <?php echo $view->formLabel('search_by_metadata_show_tooltip', __('Show tooltip')); ?>
     </div>
     <div class="inputs five columns omega">
         <p class="explanation">
@@ -28,7 +28,7 @@
     </div>
     <div class="inputs five columns omega">
         <p class="explanation">
-            <?php echo __('If checked, links will point to both Items and Collections; otherwise, an Item\'s link will point only to other Items, and a Collection\'s link will point only to other Collections.'); ?>
+            <?php echo '<del>' . __('If checked, links will point to both Items and Collections; otherwise, an Item\'s link will point only to other Items, and a Collection\'s link will point only to other Collections.') . '</del> [feature not available yet]'; ?>
         </p>
         <?php echo $view->formCheckbox('search_by_metadata_merge_results', get_option('search_by_metadata_merge_results'), null, array('1', '0')); ?>
     </div>
@@ -46,6 +46,7 @@
     </div>
 </div>
 
+
 <h2><?php echo __('Elements'); ?></h2>
 
 <p>Check the metadata fields that you want to make into search links. Recommended best practice is to use a controlled
@@ -55,8 +56,8 @@ vocabulary with a plugin like <a href="https://omeka.org/classic/plugins/SimpleV
 	<thead>
 		<tr>
 			<th class="boxes" rowspan = "1"><?php echo __('Element'); ?></th>
-			<th class="boxes" colspan = "1"><?php echo __('Item'); ?></th>
-			<th class="boxes" colspan = "1"><?php echo __('Collection'); ?></th>
+			<th class="boxes" colspan = "1"><?php echo __('Items'); ?></th>
+			<th class="boxes" colspan = "1"><?php echo __('Collections'); ?></th>
 		</tr>
 	</thead>
 	<tbody>
