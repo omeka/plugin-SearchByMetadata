@@ -9,69 +9,63 @@ msgstr ""
 "Report-Msgid-Bugs-To: "
 "POT-Creation-Date: 2021-04-14 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Daniele Binaghi <admin@bitoteko.it>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: it\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: SearchByMetadataPlugin.php:210
 msgid "Invalid search type given!"
-msgstr "È stato fornita una tipologia di ricerca non valida!"
+msgstr ""
 
 #: SearchByMetadataPlugin.php:210
 msgid "Browse other %s featuring exactly this same value"
-msgstr "Visualizza altri %s caratterizzati da questo stesso valore"
+msgstr ""
 
 #: config_form.php:11
 msgid "General settings"
-msgstr "Impostazioni generali"
+msgstr ""
 
 #: config_form.php:15
 msgid "Show tooltip"
-msgstr "Mostra suggerimento"
+msgstr ""
 
 #: config_form.php:19
 msgid "If checked, a tooltip will be shown hovering over metadata links."
 msgstr ""
-"Se selezionata, un suggerimento verrà mostrato passando con il puntatore del mouse "
-"sopra i collegamenti."
 
 #: config_form.php:27
 msgid "Merge results"
-msgstr "Unire risultati"
+msgstr ""
 
 #: config_form.php:31
 msgid ""
 "If checked, links will point to both Items and Collections; otherwise, an Item's link "
 "will point only to other Items, and a Collection's link will point only to other Collections."
 msgstr ""
-"Se selezionata, i collegamenti punteranno sia a Documenti che Collezioni; in caso contrario, "
-"il collegamento di un documento punterà solo ad altri documenti, e il collegamento di una "
-"collezione punterà solo ad altre collezioni."
 
 #: config_form.php:39
 msgid "Admin side"
-msgstr "Interfaccia amministrativa"
+msgstr ""
 
 #: config_form.php:43
 msgid "If checked, links will be created also on Admin side (by default, plugin is applied only to Public side)."
-msgstr "Se selezionata, i collegamenti verrano creati anche nell'interfaccia amministrativa (per impostazione "
-"predefinita, il plugin si applica solo all'interfaccia pubblica)."
+msgstr ""
 
 #: config_form.php:50
 msgid "Elements"
-msgstr "Elementi"
+msgstr ""
 
 #: config_form.php:58
 msgid "Element"
-msgstr "Elemento"
+msgstr ""
 
 #: config_form.php:59
 msgid "Items"
-msgstr "Documenti"
+msgstr ""
 
 #: config_form.php:60
 msgid "Collections"
-msgstr "Collezioni"
+msgstr ""
