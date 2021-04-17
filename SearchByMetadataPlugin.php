@@ -35,7 +35,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                         if ($elementSetName == 'Dublin Core' && $elementName == 'Title') {
                             add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'linkItemDcTitle'));
                         } else {
-							add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'linkItem'));
+                            add_filter(array('Display', 'Item', $elementSetName, $elementName), array($this, 'linkItem'));
                         }
                         
                     }
@@ -50,7 +50,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                         if ($elementSetName == 'Dublin Core' && $elementName == 'Title') {
                             add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'linkCollectionDcTitle'));
                         } else {
-							add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'linkCollection'));
+                            add_filter(array('Display', 'Collection', $elementSetName, $elementName), array($this, 'linkCollection'));
                         }
                         
                     }
@@ -68,7 +68,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         set_option('search_by_metadata_elements', json_encode($defaults));
 
         set_option('search_by_metadata_show_tooltip', 0);
-        set_option('search_by_metadata_merge_results', 0);
+        // set_option('search_by_metadata_merge_results', 0);
         set_option('search_by_metadata_admin_side', 0);
     }
 
@@ -99,7 +99,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
             set_option('search_by_metadata_elements', json_encode($settings));
 
             set_option('search_by_metadata_show_tooltip', 0);
-            set_option('search_by_metadata_merge_results', 0);
+            // set_option('search_by_metadata_merge_results', 0);
             set_option('search_by_metadata_admin_side', 0);
         }
     }
@@ -107,7 +107,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookUninstall()
     {
         delete_option('search_by_metadata_show_tooltip');
-        delete_option('search_by_metadata_merge_results');
+        // delete_option('search_by_metadata_merge_results');
         delete_option('search_by_metadata_admin_side');
         delete_option('search_by_metadata_elements');
     }
@@ -240,16 +240,16 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
             }
         }            
     }
+    
+    public function linkItemDcTitle($text, $args)
+    {
+        return $this->createLinkDcTitle($text, $args, 'Items');
+    }
 
-	public function linkItemDcTitle($text, $args)
-	{
-		return $this->createLinkDcTitle($text, $args, 'Items');
-	}
-
-	public function linkCollectionDcTitle($text, $args)
-	{
-		return $this->createLinkDcTitle($text, $args, 'Collections');
-	}
+    public function linkCollectionDcTitle($text, $args)
+    {
+        return $this->createLinkDcTitle($text, $args, 'Collections');
+    }
 
     /**
      * Turn DC:Title's text into link if not on Browse page,
@@ -265,15 +265,15 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         return $text;
     }
 
-	public function linkItem($text, $args)
-	{
-		return $this->createLink($text, $args, 'Items');
-	}
+    public function linkItem($text, $args)
+    {
+        return $this->createLink($text, $args, 'Items');
+    }
 
-	public function linkCollection($text, $args)
-	{
-		return $this->createLink($text, $args, 'Collections');
-	}
+    public function linkCollection($text, $args)
+    {
+        return $this->createLink($text, $args, 'Collections');
+    }
     
     /**
      * Turn element's text into link (with additional tooltip)
@@ -282,14 +282,14 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     {
         $elementText = $args['element_text'];
         if (trim($text) == '' || !$elementText) return $text;
-
+        $url_base = strtolower($model) . '/browse';
         $elementId = $elementText->element_id;
-        $url = url(strtolower($model) . '/browse', array(
+        $url = url($url_base, array(
             'advanced' => array(
                 array(
                     'element_id' => $elementId,
                     'type' => 'is exactly',
-                    'terms' =>$elementText->text,
+                    'terms' =>$elementText->text
                 )
             )
         ));
