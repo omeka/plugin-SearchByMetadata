@@ -243,12 +243,12 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
 	public function linkItemDcTitle($text, $args)
 	{
-		return $this->createLinkDcTitle($text, $args, 'items');
+		return $this->createLinkDcTitle($text, $args, 'Items');
 	}
 
 	public function linkCollectionDcTitle($text, $args)
 	{
-		return $this->createLinkDcTitle($text, $args, 'collections');
+		return $this->createLinkDcTitle($text, $args, 'Collections');
 	}
 
     /**
@@ -267,12 +267,12 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
 	public function linkItem($text, $args)
 	{
-		return $this->createLink($text, $args, 'items');
+		return $this->createLink($text, $args, 'Items');
 	}
 
 	public function linkCollection($text, $args)
 	{
-		return $this->createLink($text, $args, 'collections');
+		return $this->createLink($text, $args, 'Collections');
 	}
     
     /**
@@ -284,7 +284,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         if (trim($text) == '' || !$elementText) return $text;
 
         $elementId = $elementText->element_id;
-        $url = url($model . '/browse', array(
+        $url = url(strtolower($model) . '/browse', array(
             'advanced' => array(
                 array(
                     'element_id' => $elementId,
@@ -294,7 +294,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
             )
         ));
 
-        $tooltip = (get_option('search_by_metadata_show_tooltip') ? " title=\"" . __('Browse other %s featuring exactly this same value', $model) . "\"" : "");
+        $tooltip = (get_option('search_by_metadata_show_tooltip') ? " title=\"" . __('Browse other %s featuring exactly this same value', __($model)) . "\"" : "");
                     
         return "<a href=\"$url\"" . $tooltip . ">$text</a>";
     }
