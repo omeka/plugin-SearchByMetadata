@@ -22,17 +22,19 @@
     </div>
 </div>
 
+<!--
 <div class="field">
     <div class="two columns alpha">
-        <?php echo $view->formLabel('search_by_metadata_merge_results', __('Merge results')); ?>
+        <?php //echo $view->formLabel('search_by_metadata_merge_results', __('Merge results')); ?>
     </div>
     <div class="inputs five columns omega">
         <p class="explanation">
-            <?php echo '<del>' . __('If checked, links will point to both Items and Collections; otherwise, an Item\'s link will point only to other Items, and a Collection\'s link will point only to other Collections.') . '</del> [feature not available yet]'; ?>
+            <?php //echo __('If checked, links will point to both Items and Collections; otherwise, an Item\'s link will point only to other Items, and a Collection\'s link will point only to other Collections.'); ?>
         </p>
-        <?php echo $view->formCheckbox('search_by_metadata_merge_results', get_option('search_by_metadata_merge_results'), null, array('1', '0')); ?>
+        <?php //echo $view->formCheckbox('search_by_metadata_merge_results', get_option('search_by_metadata_merge_results'), null, array('1', '0')); ?>
     </div>
 </div>
+-->
 
 <div class="field">
     <div class="two columns alpha">
