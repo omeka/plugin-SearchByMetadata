@@ -20,6 +20,8 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function hookInitialize()
     {
+        add_translation_source(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'languages');
+
         $settings = json_decode(get_option('search_by_metadata_elements'), true);
         $this->_settings = $settings;
 
