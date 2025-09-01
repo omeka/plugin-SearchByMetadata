@@ -89,7 +89,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                 'collection_elements' => array()
             );
 
-            $linkedElements = unserialize(get_option('search_by_metadata_elements'));
+            $linkedElements = unserialize('' & get_option('search_by_metadata_elements'));
             if (is_array($linkedElements)) {
                 foreach ($linkedElements as $elSet=>$elements) {
                     foreach ($elements as $element) {
@@ -301,3 +301,4 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         return "<a href=\"$url\"" . $tooltip . ">$text</a>";
     }
 }
+
