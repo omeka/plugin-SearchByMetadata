@@ -3,7 +3,19 @@ vocabulary with the <a href="http://omeka.org/add-ons/plugins/simple-vocab/">Sim
 
 <?php
 $elTable = get_db()->getTable('Element');
-$data = $elTable->findPairsForSelectForm();
+$select = $elTable->getSelectForFindBy(array('record_types' => array('Item', 'All')));
+$select->reset(Zend_Db_Select::COLUMNS);
+$select->from(array(), array(
+    'id' => 'elements.id',
+    'name' => 'elements.name',
+    'set_name' => 'element_sets.name',
+));
+$data = array();
+$elements = $elTable->fetchAll($select);
+foreach ($elements as $element) {
+    $data[__($element['set_name'])][$element['id']] = __($element['name']);
+}
+
 $linkedElements = unserialize(get_option('search_by_metadata_elements'));
 $view = get_view();
 $values = array();
@@ -15,16 +27,10 @@ if(is_array($linkedElements)) {
         }
     }
 }
-
-if (get_option('show_element_set_headings') ) {
-    foreach($data as $elSet=>$options) {
-        echo "<div class='field'>";
-        echo "<h2>$elSet</h2>";
-        echo $view->formMultiCheckbox('element_sets', $values, null, $options, '');
-        echo "</div>";
-    }
-} else {
-    echo "<div class='field no-headings'>";
-    echo $view->formMultiCheckbox('element_sets', $values, null, $data, '');
-    echo "</div>";
-}
+?>
+<?php foreach($data as $elSet => $options): ?>
+<h2><?php echo html_escape($elSet); ?></h2>
+<div class="field" style="overflow: hidden">
+    <?php echo $view->formMultiCheckbox('element_sets', $values, null, $options, ''); ?>
+</div>
+<?php endforeach;
