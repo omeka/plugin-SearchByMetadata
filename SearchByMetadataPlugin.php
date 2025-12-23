@@ -4,15 +4,16 @@
 class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array(
+        'install',
         'uninstall', 
         'config', 
         'config_form',
-        );
+    );
 
     public function setUp()
     {
         parent::setUp();
-        $linkedElements = unserialize(get_option('search_by_metadata_elements'));
+        $linkedElements = $this->getLinkedElements();
         if(is_array($linkedElements)){
             foreach($linkedElements as $elementSet=>$elements) {
                 foreach($elements as $element) {
@@ -59,6 +60,7 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function hookConfigForm()
     {
+        $linkedElements = $this->getLinkedElements();
         include('config_form.php');
     }
 
@@ -91,5 +93,11 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
             )
         ));
         return "<a href=\"$url\">$text</a>";
+    }
+
+    public function getLinkedElements()
+    {
+        $linkedElements = unserialize((string) get_option('search_by_metadata_elements'));
+        return is_array($linkedElements) ? $linkedElements : array();
     }
 }

@@ -16,7 +16,6 @@ foreach ($elements as $element) {
     $data[__($element['set_name'])][$element['id']] = __($element['name']);
 }
 
-$linkedElements = unserialize(get_option('search_by_metadata_elements'));
 $view = get_view();
 $values = array();
 if(is_array($linkedElements)) {
