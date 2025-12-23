@@ -74,10 +74,11 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     
     public function link($text, $args)//$record, $elementText)
     {
-        
         $record = $args['record'];
         $elementText = $args['element_text'];
-        if (trim($text) == '' || !$elementText) return $text;
+        if (!$elementText || trim((string) $text) == '') {
+            return $text;
+        }
 
         $elementId = $elementText->element_id;
         $url = url('items/browse', array(
@@ -85,13 +86,10 @@ class SearchByMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                 array(
                     'element_id' => $elementId,
                     'type' => 'is exactly',
-                    'terms' =>$elementText->text,
+                    'terms' => $elementText->text,
                 )
             )
         ));
         return "<a href=\"$url\">$text</a>";
     }
-    
-
-
 }
